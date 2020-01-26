@@ -1,0 +1,5 @@
+*.dll
+.packages
+.dart_tool/
+.vscode/
+*.exe
