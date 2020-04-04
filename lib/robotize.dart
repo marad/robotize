@@ -5,6 +5,7 @@ export 'package:robotize/src/hotkeys.dart';
 import 'dart:ffi';
 import 'package:event_bus/event_bus.dart';
 import 'package:ffi/ffi.dart';
+import 'package:robotize/src/clipboard.dart';
 import 'package:robotize/src/keyboard.dart';
 import 'package:robotize/src/windows.dart';
 import 'package:robotize/src/hotkeys.dart';
@@ -15,12 +16,14 @@ var _eventBus = EventBus(sync: true);
 Input input = null;
 Windows windows = null;
 Hotkey hotkey = null;
+Clipboard clipboard = null;
 //Hotstr hotstr = null;
 
 void robotizeInit() {
   input = Input();
   windows = Windows();
   hotkey = Hotkey(_eventBus);
+  clipboard = Clipboard();
   Keyboard.init(_eventBus);
 }
 

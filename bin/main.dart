@@ -101,7 +101,9 @@ main() {
     // input.sendKeyUp(0xA2);
     // input.sendKeyUp(0xA3);
 
-    input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
+    clipboard.text = "This is sparta! 😀";
+    input.send("^v");
+    // input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
     // input.send("{{}{}}"); // czemu to nie dziala?
 
     // var eventDown = winapi.KeyboardInput.allocate(virtualKeyCode: 9925, flags: winapi.KEYEVENTF_UNICODE);

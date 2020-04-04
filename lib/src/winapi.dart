@@ -263,6 +263,53 @@ typedef _SetKeyboardState_C = Uint32 Function(Pointer lpKeyState);
 typedef _SetKeyboardState_Dart = int Function(Pointer lpKeyState);
 var SetKeyboardState = _user32.lookupFunction<_SetKeyboardState_C, _SetKeyboardState_Dart>("SetKeyboardState");
 
+const CF_BITMAP = 2;
+const CF_DIB = 8;
+const CF_DIBV5 = 17;
+const CF_DIF = 5;
+const CF_DSPBITMAP = 0x0082;
+const CF_DSPENHMETAFILE = 0x008E;
+const CF_DSPMETAFILEPICT = 0x0083;
+const CF_DSPTEXT = 0x0081;
+const CF_ENHMETAFILE = 14;
+const CF_GDIOBJFIRST = 0x0300;
+const CF_GDIOBJLAST = 0x03FF;
+const CF_HDROP = 15;
+const CF_LOCALE = 16;
+const CF_METAFILEPICT = 3;
+const CF_OEMTEXT = 7;
+const CF_OWNERDISPLAY = 0x0080;
+const CF_PALETTE = 9;
+const CF_PENDATA = 10;
+const CF_PRIVATEFIRST = 0x0200;
+const CF_PRIVATELAST = 0x02FF;
+const CF_RIFF = 11;
+const CF_SYLK = 4;
+const CF_TEXT = 1;
+const CF_TIFF = 6;
+const CF_UNICODETEXT = 13;
+const CF_WAVE = 12;
+
+typedef _GetClipboardData_C = Pointer Function(Uint32 uFormat);
+typedef _GetClipboardData_Dart = Pointer Function(int uFormat);
+var GetClipboardData = _user32.lookupFunction<_GetClipboardData_C, _GetClipboardData_Dart>("GetClipboardData");
+
+typedef _SetClipboardData_C = Pointer Function(Uint32 uFormat, Pointer hMem);
+typedef _SetClipboardData_Dart = Pointer Function(int uFormat, Pointer hMem);
+var SetClipboardData = _user32.lookupFunction<_SetClipboardData_C, _SetClipboardData_Dart>("SetClipboardData");
+
+typedef _OpenClipboard_C = Uint32 Function(Pointer hWndNewOwner);
+typedef _OpenClipboard_Dart = int Function(Pointer hWndNewOwner);
+var OpenClipboard = _user32.lookupFunction<_OpenClipboard_C, _OpenClipboard_Dart>("OpenClipboard");
+
+typedef _CloseClipboard_C = Uint32 Function();
+typedef _CloseClipboard_Dart = int Function();
+var CloseClipboard = _user32.lookupFunction<_CloseClipboard_C, _CloseClipboard_Dart>("CloseClipboard");
+
+typedef _EmptyClipboard_C = Uint32 Function();
+typedef _EmptyClipboard_Dart = int Function();
+var EmptyClipboard = _user32.lookupFunction<_EmptyClipboard_C, _EmptyClipboard_Dart>("EmptyClipboard");
+
 // KERNEL
 DynamicLibrary _kernel32 = DynamicLibrary.open("kernel32.dll");
 
@@ -285,3 +332,26 @@ var OpenProcess = _kernel32.lookupFunction<_OpenProcess_C, _OpenProcess_Dart>("O
 typedef _CloseHandle_C = Uint32 Function(Pointer hObject);
 typedef _CloseHandle_Dart = int Function(Pointer hObject);
 var CloseHandle = _kernel32.lookupFunction<_CloseHandle_C, _CloseHandle_Dart>("CloseHandle");
+
+typedef _GlobalAlloc_C = Pointer Function(Uint32 uFlags, Uint32 dwBytes);
+typedef _GlobalAlloc_Dart = Pointer Function(int uFlags, int dwBytes);
+var GlobalAlloc = _kernel32.lookupFunction<_GlobalAlloc_C, _GlobalAlloc_Dart>("GlobalAlloc");
+
+typedef _GlobalLock_C = Pointer Function(Pointer hMem);
+typedef _GlobalLock_Dart = Pointer Function(Pointer hMem);
+var GlobalLock = _kernel32.lookupFunction<_GlobalLock_C, _GlobalLock_Dart>("GlobalLock");
+
+typedef _GlobalUnlock_C = Uint32 Function(Pointer hMem);
+typedef _GlobalUnlock_Dart = int Function(Pointer hMem);
+var GlobalUnlock = _kernel32.lookupFunction<_GlobalUnlock_C, _GlobalUnlock_Dart>("GlobalUnlock");
+
+// MSVCRT
+DynamicLibrary _msvcrt = DynamicLibrary.open("msvcrt.dll");
+
+typedef _memcpy_C = Pointer Function(Pointer dest, Pointer src, Uint32 count);
+typedef _memcpy_Dart = Pointer Function(Pointer dest, Pointer src, int count);
+var memcpy = _msvcrt.lookupFunction<_memcpy_C, _memcpy_Dart>("memcpy");
+
+typedef _wmemcpy_C = Pointer Function(Pointer dest, Pointer src, Uint32 count);
+typedef _wmemcpy_Dart = Pointer Function(Pointer dest, Pointer src, int count);
+var wmemcpy = _msvcrt.lookupFunction<_wmemcpy_C, _wmemcpy_Dart>("wmemcpy");

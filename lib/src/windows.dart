@@ -9,7 +9,7 @@ import 'winapi.dart' as winapi;
 // [ ] Wysłanie kliknięcia
 // [ ] - kliknięcie relatywnie do ekranu
 // [ ] - kliknięcie relatywnie do okna (ScreenToClient / ClientToScreen)
-// [ ] Czytanie clipboardu / Zapisywanie do clipboardu
+// [x] Czytanie clipboardu / Zapisywanie do clipboardu
 // [x] Szukanie Okna (FinwWindowExA)
 // [x] - Szukanie po ID
 // [x] - Szukanie po tytule
