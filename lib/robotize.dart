@@ -17,14 +17,14 @@ Windows windows = null;
 Hotkey hotkey = null;
 //Hotstr hotstr = null;
 
-void roboInit() {
+void robotizeInit() {
   input = Input();
   windows = Windows();
   hotkey = Hotkey(_eventBus);
   Keyboard.init(_eventBus);
 }
 
-void roboMainLoop() {
+void robotizeMainLoop() {
 
   var msg = allocate<winapi.MSG>();
 
@@ -46,6 +46,7 @@ void roboMainLoop() {
       print('Some error!');
     } else if (result == 0) {
       // TODO: cleanup hooks
+      print('Some error!');
       break;
     }
   }

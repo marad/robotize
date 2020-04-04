@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:io';
+
 import 'winapi.dart' as winapi;
 import 'keyboard.dart';
 
@@ -10,6 +11,9 @@ class Input {
   }
 
   void sendKeys(List<KeyEvent> keyEvents) {
+    // TODO: 
+    // - save pressed keys
+    // - unset pressed keys
     keyEvents.forEach((event) {
       event.modifiers.forEach((name) => sendKeyDown(keyMap[name]));
       if (event.down) {
@@ -23,21 +27,18 @@ class Input {
       }
       event.modifiers.forEach((name) => sendKeyUp(keyMap[name]));
     });
+    // - set previously pressed keys
   }
 
   void sendKeyDown(int virtualKeyCode) {
-    winapi.keybd_event(
-        virtualKeyCode,
-        winapi.MapVirtualKeyW(virtualKeyCode, winapi.MAPVK_VK_TO_VSC),
-        winapi.KEYEVENTF_EXTENDEDKEY,
-        nullptr);
+    var event = winapi.KeyboardInput.allocate(virtualKeyCode: virtualKeyCode);
+    winapi.SendInput(1, event.addressOf, sizeOf<winapi.KeyboardInput>());
   }
 
   void sendKeyUp(int virtualKeyCode) {
-    winapi.keybd_event(
-        virtualKeyCode,
-        winapi.MapVirtualKeyW(virtualKeyCode, winapi.MAPVK_VK_TO_VSC),
-        winapi.KEYEVENTF_EXTENDEDKEY | winapi.KEYEVENTF_KEYUP,
-        nullptr);
+    var event = winapi.KeyboardInput.allocate(
+      virtualKeyCode: virtualKeyCode, 
+      flags: winapi.KEYEVENTF_KEYUP);
+    winapi.SendInput(1, event.addressOf, sizeOf<winapi.KeyboardInput>());
   }
 }

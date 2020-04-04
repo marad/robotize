@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'package:event_bus/event_bus.dart';
 import 'package:robotize/src/keyboard.dart';
+import 'package:robotize/robotize.dart';
 
 import 'winapi.dart' as winapi;
 
@@ -9,16 +10,33 @@ class HotkeyPressed {
   HotkeyPressed(this.hotkeyId);
 }
 
+class HotkeyDetails {
+  final String hotkeyString;
+  final KeyEvent keyEvent;
+  final Function callback;
+  HotkeyDetails(this.hotkeyString, this.keyEvent, this.callback);
+}
+
 class Hotkey {
   final EventBus _eventBus;
   var _hotkeyIds = <String, int>{};
-  var _hotkeys = <int, Function>{};
-  var _nextId = 0;
+  var _hotkeys = <int, HotkeyDetails>{};
+  var _nextId = 1;
 
   Hotkey(this._eventBus) {
     _eventBus.on<HotkeyPressed>()
       .listen((hkPressed) {
-         _hotkeys[hkPressed.hotkeyId]();
+        try {
+          var hkDetails = _hotkeys[hkPressed.hotkeyId];
+          hkDetails.keyEvent
+            .modifiers.forEach((modifier) => input.sendKeyUp(keyMap[modifier]));
+          hkDetails.callback();
+          hkDetails.keyEvent
+            .modifiers.forEach((modifier) => input.sendKeyDown(keyMap[modifier]));
+        }
+        catch(e) {
+          print("Some exception: ${e}");
+        }
       });
   }
 
@@ -28,9 +46,26 @@ class Hotkey {
     var key = Keyboard.decodeEvents(hotkey).single;
     var hotkeyId = _nextId++;
     _hotkeyIds[hotkey] = hotkeyId;
-    _hotkeys[hotkeyId] = callback;
-    // TODO add modifiers
-    winapi.RegisterHotKey(nullptr, hotkeyId, 0, key.keyCode);
+    _hotkeys[hotkeyId] = HotkeyDetails(hotkey, key, callback);
+    var modifiers = 0;
+    if (key.shift) {
+      modifiers |= winapi.MOD_SHIFT;
+    }
+    if (key.ctrl) {
+      modifiers |= winapi.MOD_CONTROL;
+    }
+    if (key.alt) {
+      modifiers |= winapi.MOD_ALT;
+    }
+    if (key.win) {
+      modifiers |= winapi.MOD_WIN;
+    }
+    var result = winapi.RegisterHotKey(nullptr, hotkeyId, modifiers, key.keyCode);
+    if (result == 0) {
+      print("Error registering hotkey!");
+      var error = winapi.GetLastError();
+      print('Error: $error');
+    }
   }
 
   void remove(String hotkey) {

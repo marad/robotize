@@ -1,8 +1,12 @@
 
+import 'dart:ffi';
+import 'package:ffi/ffi.dart';
 import 'package:robotize/robotize.dart';
+import 'package:robotize/src/keyboard.dart';
+import 'package:robotize/src/winapi.dart' as winapi;
 
 main() {
-  roboInit();
+  robotizeInit();
   // print('Current window:');
   // var id = getActiveWindow();
   // print(id.asPointer().address);
@@ -43,11 +47,76 @@ main() {
   // sendInput("Hello World!");
   // quitWindow(notepad.id);
 
-  hotkey.add("^s", () {
-    // input.send("^a{DELETE}");
-    input.send("Hello World");
-    input.send("{{}{}}"); // czemu to nie dziala?
+
+
+  var vkeysToClear = [
+    0x10, // VK_SHIFT
+    0x11, // VK_CONTROL
+    0x12, // VK_MENU (ALT)
+    0xA0, // VK_LSHIFT
+    0xA1, // VK_RSHIFT
+    0xA2, // VK_LCONTROL
+    0xA3, // VK_RCONTROL
+    0xA4, // VK_LMENU (LALT)
+    0xA5, // VK_RMENU (RALT)
+  ];
+  hotkey.add("{F5}", () {
+    // var currentState = allocate<Int8>(count: 256);
+    // winapi.GetKeyboardState(currentState);
+
+
+    // String getKeyName(int a) {
+    //   var entries = keyMap.entries.where((entry) => entry.value == a);
+    //   if (entries.length > 0) {
+    //     return entries.first.key;
+    //   } else {
+    //     return "$a";
+    //   }
+    // }
+
+    // var clearedState = allocate<Int8>(count: 256);
+    // for(var i = 0; i < 256; i++) {
+    //   print('${getKeyName(i)}: ${currentState.elementAt(i).value}');
+    //   var value = currentState.elementAt(i).value;
+    //   if (vkeysToClear.contains(value)) {
+    //     clearedState.elementAt(i).value = 0;
+    //   } else {
+    //     clearedState.elementAt(i).value = value;
+    //   }
+    // }
+    // winapi.SetKeyboardState(clearedState);
+
+    ////////////////////////////////////////////////////////////////////////////////
+    
+    // var window = windows.getActiveWindow();
+    // var sc = winapi.MapVirtualKeyW(0xA0, winapi.MAPVK_VK_TO_VSC);
+    // winapi.PostMessageW(
+    //   window.getWindowInfo().id.asPointer(),
+    //   0x0101, // WM_KEYUP
+    //   Pointer.fromAddress(0xA0),
+    //   Pointer.fromAddress((sc << 16) | 0xC0000001)
+    // );
+
+    // input.sendKeyUp(0x11);
+    // input.sendKeyUp(0xA2);
+    // input.sendKeyUp(0xA3);
+
+    input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
+    // input.send("{{}{}}"); // czemu to nie dziala?
+
+    // var eventDown = winapi.KeyboardInput.allocate(virtualKeyCode: 9925, flags: winapi.KEYEVENTF_UNICODE);
+    // var eventDown = winapi.KeyboardInput.allocate(0, '😀'.codeUnitAt(0), winapi.KEYEVENTF_UNICODE);
+    // var eventUp = winapi.KeyboardInput.allocate(0, '😀'.codeUnitAt(0), winapi.KEYEVENTF_UNICODE | winapi.KEYEVENTF_KEYUP);
+
+    // winapi.SendInput(1, eventDown.addressOf, sizeOf<winapi.KeyboardInput>());
+    // winapi.SendInput(1, eventUp.addressOf, sizeOf<winapi.KeyboardInput>());
+
+
+    // winapi.SetKeyboardState(currentState);
+    // if (shiftDown != 0) {
+    //   input.send("{SHIFT down}");
+    // }
   });
 
-  roboMainLoop();
+  robotizeMainLoop();
 }

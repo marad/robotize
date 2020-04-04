@@ -119,24 +119,44 @@ const KEYEVENTF_KEYUP = 0x0002;
 const KEYEVENTF_UNICODE = 0x0004;
 const KEYEVENTF_SCANCODE = 0x0008;
 
+const VK_SHIFT = 0x10;
+const VK_ALT = 0x12;
+const VK_CTRL = 0x11;
+const VK_LWIN = 0x5B;
+const VK_RWIN = 0x5C;
+
+const VK_LSHIFT = 0xA0;
+const VK_RSHIFT = 0xA1;
+const VK_MENU = 0x12;
+const VK_RMENU = 0xA5;
+const VK_LCONTROL = 0xA2;
+const VK_RCONTROL = 0xA3;
+
 
 class KeyboardInput extends Struct {
-  @Uint64() int type;
+  @Uint32() int type;
+  @Uint32() int _padding;
   @Uint16() int virtualCode;
   @Uint16() int scanCode;
-  @Uint64() int flags;
-  @Uint64() int time;
-  @Uint64() int dwExtraInfo;
-  // Pointer dwExtraInfo;
+  @Uint32() int flags;
+  @Uint32() int time;
+  Pointer dwExtraInfo;
+  @Uint64() int _padding2;
 
-  factory KeyboardInput.allocate(int virtualCode, int scanCode, int flags) =>
+  factory KeyboardInput.allocate({
+      int virtualKeyCode = 0, 
+      int scanCode = 0,
+      int flags = 0
+    }) =>
     allocate<KeyboardInput>().ref
       ..type = INPUT_KEYBOARD
-      ..virtualCode = virtualCode
+      ..virtualCode = virtualKeyCode
       ..scanCode = scanCode
       ..flags = flags
       ..time = 0
-      ..dwExtraInfo = 0
+      ..dwExtraInfo = nullptr
+      .._padding = 0
+      .._padding2 = 0
       ;
 }
 
@@ -231,6 +251,17 @@ typedef _UnregisterHotKey_C = Uint32 Function(Pointer hWnd, Uint32 id);
 typedef _UnregisterHotKey_Dart = int Function(Pointer hWnd, int id);
 var UnregisterHotKey = _user32.lookupFunction<_UnregisterHotKey_C, _UnregisterHotKey_Dart>("UnregisterHotKey");
 
+typedef _GetKeyState_C = Int16 Function(Uint32 nVirtKey);
+typedef _GetKeyState_Dart = int Function(int nVirtKey);
+var GetKeyState = _user32.lookupFunction<_GetKeyState_C, _GetKeyState_Dart>("GetKeyState");
+
+typedef _GetKeyboardState_C = Uint32 Function(Pointer lpKeyState);
+typedef _GetKeyboardState_Dart = int Function(Pointer lpKeyState);
+var GetKeyboardState = _user32.lookupFunction<_GetKeyboardState_C, _GetKeyboardState_Dart>("GetKeyboardState");
+
+typedef _SetKeyboardState_C = Uint32 Function(Pointer lpKeyState);
+typedef _SetKeyboardState_Dart = int Function(Pointer lpKeyState);
+var SetKeyboardState = _user32.lookupFunction<_SetKeyboardState_C, _SetKeyboardState_Dart>("SetKeyboardState");
 
 // KERNEL
 DynamicLibrary _kernel32 = DynamicLibrary.open("kernel32.dll");
