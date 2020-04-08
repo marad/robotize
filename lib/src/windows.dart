@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
+import 'package:robotize/src/models.dart';
 import 'winapi.dart' as winapi;
 
 // Funkcje do zaimplementowania w pierwszej kolejnosci
@@ -75,13 +76,16 @@ class WindowQuery {
 
 
 class Windows {
-  Window getActiveWindow() =>
+  static Window getActiveWindow() =>
       Window(WindowId.fromPointer(winapi.GetForegroundWindow()));
 
-  Window getWindow(WindowId id) => Window(id);
+  static Window getDesktopWindow() =>
+    Window(WindowId.fromPointer(winapi.GetDesktopWindow()));
+
+  static Window getWindow(WindowId id) => Window(id);
 
   /// Lists windows. If query is not provided, lists only visible windows.
-  List<Window> list({WindowQuery query}) {
+  static List<Window> list({WindowQuery query}) {
     if (query != null && query.windowId != null) {
       // find and examine only one window
       var window = getWindow(query.windowId);
@@ -112,7 +116,7 @@ class Windows {
     }
   }
 
-  Window find(WindowQuery query) {
+  static Window find(WindowQuery query) {
     var windows = list(query: query);
     if (windows.length > 0) {
       return windows.first;
@@ -120,13 +124,14 @@ class Windows {
       return null;
     }
   }
-
 }
 
 class Window {
   WindowId _id;
 
   Window(this._id);
+
+  Pointer get hwnd => _id.asPointer();
 
   WindowInfo getWindowInfo() {
     var buffer = allocate<Uint16>(count: 257);
@@ -138,7 +143,6 @@ class Window {
 
   /// Returns text from provided window or control.
   String getWindowText() {
-    var hwnd = _id.asPointer();
     var length = winapi.GetWindowTextLengthA(hwnd);
     var buffer = allocate<Uint16>(count: length + 1);
     var readChars = winapi.GetWindowTextW(hwnd, buffer, length + 1);
@@ -146,6 +150,35 @@ class Window {
     free(buffer);
     return String.fromCharCodes(chars);
   }
+
+  Point clientToScreen(Point input) {
+    var winapiPoint = winapi.Point.create(x: input.x, y: input.y);
+    winapi.ClientToScreen(hwnd, winapiPoint);
+    return Point(x: winapiPoint.ref.x, y: winapiPoint.ref.y);
+  }
+
+  Rect getWindowRect() {
+    var winapiRect = winapi.Rect.create();
+    winapi.GetWindowRect(hwnd, winapiRect);
+    return Rect(
+      left: winapiRect.ref.left,
+      top: winapiRect.ref.top,
+      right: winapiRect.ref.right,
+      bottom: winapiRect.ref.bottom,
+    );
+  }
+
+  Rect getClientRect() {
+    var winapiRect = winapi.Rect.create();
+    winapi.GetClientRect(hwnd, winapiRect);
+    return Rect(
+      left: winapiRect.ref.left,
+      top: winapiRect.ref.top,
+      right: winapiRect.ref.right,
+      bottom: winapiRect.ref.bottom,
+    );
+  }
+
 
   static String _bufToString(Pointer<Uint16> buffer, int length) {
     List<int> classChars = buffer.asTypedList(length);
@@ -241,7 +274,7 @@ class _WindowCollector extends Struct {
         ..windows = allocate<Uint32>(count: capacity);
 
   void addWindow(int windowId) {
-    // TODO: if capacity is reached - allocate more and copy
+    // TODO: if capacity is reached - allocate more and copy (memcpy)
     windows[numWindows++] = windowId;
   }
 }

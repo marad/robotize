@@ -12,7 +12,7 @@ main() {
   // print(id.asPointer().address);
   // print(getWindowText(id));
   // print(getWindowInfo(id));
-  var active = windows.getActiveWindow();
+  var active = Windows.getActiveWindow();
   print(active.getWindowText());
 
   // print('All windows:');
@@ -48,19 +48,7 @@ main() {
   // quitWindow(notepad.id);
 
 
-
-  var vkeysToClear = [
-    0x10, // VK_SHIFT
-    0x11, // VK_CONTROL
-    0x12, // VK_MENU (ALT)
-    0xA0, // VK_LSHIFT
-    0xA1, // VK_RSHIFT
-    0xA2, // VK_LCONTROL
-    0xA3, // VK_RCONTROL
-    0xA4, // VK_LMENU (LALT)
-    0xA5, // VK_RMENU (RALT)
-  ];
-  hotkey.add("{F5}", () {
+  hotkey.add("{F4}", () {
     // var currentState = allocate<Int8>(count: 256);
     // winapi.GetKeyboardState(currentState);
 
@@ -101,8 +89,10 @@ main() {
     // input.sendKeyUp(0xA2);
     // input.sendKeyUp(0xA3);
 
-    clipboard.text = "This is sparta! 😀";
-    input.send("^v");
+    // clipboard.text = "This is sparta! 😀";
+    // var desktop = Window(WindowId.fromPointer(winapi.GetDesktopWindow()));
+    input.click(500, 500, button: MouseButton.Left, clickMode: ClickMode.RelativeToWindowClientArea);
+    // input.send("^v");
     // input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
     // input.send("{{}{}}"); // czemu to nie dziala?
 

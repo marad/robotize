@@ -22,6 +22,64 @@ typedef _SetForegroundWindow_C = Uint32 Function(Pointer);
 typedef _SetForegroundWindow_Dart = int Function(Pointer);
 var SetForegroundWindow = _user32.lookupFunction<_SetForegroundWindow_C, _SetForegroundWindow_Dart>("SetForegroundWindow");
 
+class Point extends Struct {
+  @Uint32() int x;
+  @Uint32() int y;
+
+  static Pointer<Point> create({
+    int x = 0,
+    int y = 0,
+  }) {
+    var point = allocate<Point>();
+    point.ref
+      ..x = x
+      ..y = y;
+    return point;
+  }
+}
+
+class Rect extends Struct {
+  @Uint32() int left;
+  @Uint32() int top;
+  @Uint32() int right;
+  @Uint32() int bottom;
+
+  static Pointer<Rect> create({
+    int left = 0,
+    int top = 0,
+    int right = 0,
+    int bottom = 0,
+  }) {
+    var rect = allocate<Rect>();
+    rect.ref
+      ..left = left
+      ..top = top
+      ..right = right
+      ..bottom = bottom;
+    return rect;
+  }
+
+  int get width => right - left;
+  int get height => bottom - top;
+
+  @override
+  String toString() {
+    return "$left, $top, $right $bottom";
+  }
+}
+
+typedef _GetWindowRect_C = Uint32 Function(Pointer hWnd, Pointer<Rect> lpRect);
+typedef _GetWindowRect_Dart = int Function(Pointer hWnd, Pointer<Rect> lpRect);
+var GetWindowRect = _user32.lookupFunction<_GetWindowRect_C, _GetWindowRect_Dart>("GetWindowRect");
+
+typedef _GetClientRect_C = Uint32 Function(Pointer hWnd, Pointer lpRect);
+typedef _GetClientRect_Dart = int Function(Pointer hWnd, Pointer lpRect);
+var GetClientRect = _user32.lookupFunction<_GetClientRect_C, _GetClientRect_Dart>("GetClientRect");
+
+typedef _ClientToScreen_C = Uint32 Function(Pointer hWnd, Pointer lpPoint);
+typedef _ClientToScreen_Dart = int Function(Pointer hWnd, Pointer lpPoint);
+var ClientToScreen = _user32.lookupFunction<_ClientToScreen_C, _ClientToScreen_Dart>("ClientToScreen");
+
 const SW_HIDE = 0;
 const SW_SHOWNORMAL = 1;
 const SW_SHOWMINIMIZED = 2;
@@ -160,19 +218,41 @@ class KeyboardInput extends Struct {
       ;
 }
 
+const MOUSEEVENTF_ABSOLUTE = 0x8000;
+const MOUSEEVENTF_LEFTDOWN = 0x02;
+const MOUSEEVENTF_LEFTUP = 0x04;
+const MOUSEEVENTF_RIGHTDOWN = 0x08;
+const MOUSEEVENTF_RIGHTUP = 0x10;
+const MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+const MOUSEEVENTF_MIDDLEUP = 0x0040;
+const MOUSEEVENTF_MOVE = 0x0001;
+const MOUSEEVENTF_WHEEL = 0x0800;
+const MOUSEEVENTF_HWHEEL = 0x01000;
+const MOUSEEVENTF_XDOWN = 0x0080;
+const MOUSEEVENTF_XUP = 0x0100;
 
-class _MouseInput extends Struct {
-  @Uint64()
-  int dx;
-  @Uint64()
-  int dy;
-  @Uint32()
-  int mouseData;
-  @Uint32()
-  int flags;
-  @Uint32()
-  int time;
+class MouseInput extends Struct {
+  @Uint32() int type;
+  @Uint32() int _padding;
+  @Uint32() int dx;
+  @Uint32() int dy;
+  @Uint32() int mouseData;
+  @Uint32() int flags;
+  @Uint32() int time;
   Pointer extraInfo;
+
+  factory MouseInput.allocate(int x, int y, {
+    int mouseData = 0,
+    int flags = 0,
+    int time = 0,
+  }) => allocate<MouseInput>().ref
+    ..type = INPUT_MOUSE
+    ..dx = x
+    ..dy = y
+    ..mouseData = mouseData
+    ..flags = flags
+    ..time = time
+    ;
 }
 
 
@@ -309,6 +389,15 @@ var CloseClipboard = _user32.lookupFunction<_CloseClipboard_C, _CloseClipboard_D
 typedef _EmptyClipboard_C = Uint32 Function();
 typedef _EmptyClipboard_Dart = int Function();
 var EmptyClipboard = _user32.lookupFunction<_EmptyClipboard_C, _EmptyClipboard_Dart>("EmptyClipboard");
+
+const EVENT_SYSTEM_FOREGROUND = 0x0003;
+const WINEVENT_OUTOFCONTEXT = 0x0000;
+const WINEVENT_SKIPOWNPROCESS = 0x0002;
+
+typedef WinEventHookCallback = Void Function(Pointer eventHook, Uint32 event, Pointer hwnd, Uint64 idObject, Uint64 idChild, Uint32 eventThread, Uint32 eventTime);
+typedef _SetWinEventHook_C = Pointer Function(Uint32 eventMin, Uint32 eventMax, Pointer hmodWinEventProc, Pointer pfnWinEventProc, Uint32 idProcess, Uint32 idThread, Uint32 dwFlags);
+typedef _SetWinEventHook_Dart = Pointer Function(int eventMin, int eventMax, Pointer hmodWinEventProc, Pointer pfnWinEventProc, int idProcess, int idThread, int dwFlags);
+var SetWinEventHook = _user32.lookupFunction<_SetWinEventHook_C, _SetWinEventHook_Dart>("SetWinEventHook");
 
 // KERNEL
 DynamicLibrary _kernel32 = DynamicLibrary.open("kernel32.dll");
