@@ -225,6 +225,19 @@ class Window {
     // return winapi.DestroyWindow(id.asPointer()) > 0;
   }
 
+  bool isAlwaysOnTop() {
+    var styles = winapi.GetWindowLongPtrA(hwnd, winapi.GWL_EXSTYLE).address;
+    return styles & winapi.WS_EX_TOPMOST == winapi.WS_EX_TOPMOST;
+  }
+
+  void setAlwaysOnTop(bool alwaysOnTop) {
+    winapi.SetWindowPos(
+      hwnd, 
+      alwaysOnTop ? winapi.HWND_TOPMOST : winapi.HWND_NOTOPMOST,
+      0, 0, 0, 0,
+      winapi.SWP_NOMOVE | winapi.SWP_NOSIZE | winapi.SWP_FRAMECHANGED);
+  }
+
   int postMessage(int msg, int wparam, int lparam) {
     var wparam_c =  allocate<Uint64>();
     var lparam_c = allocate<Int64>();

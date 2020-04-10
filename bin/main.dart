@@ -91,7 +91,13 @@ main() {
 
     // clipboard.text = "This is sparta! 😀";
     // var desktop = Window(WindowId.fromPointer(winapi.GetDesktopWindow()));
-    input.click(500, 500, button: MouseButton.Left, clickMode: ClickMode.RelativeToWindowClientArea);
+    // input.click(500, 500, button: MouseButton.Left, clickMode: ClickMode.RelativeToWindowClientArea);
+    var window = Windows.find(WindowQuery(titleMatcher: "Untitled"));
+    print(window.getWindowText());
+    // var window = Windows.getActiveWindow();
+    print(window.isAlwaysOnTop());
+    window.setAlwaysOnTop(!window.isAlwaysOnTop());
+    print('Window set to always on top');
     // input.send("^v");
     // input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
     // input.send("{{}{}}"); // czemu to nie dziala?

@@ -152,7 +152,6 @@ final GWLP_USERDATA = -21;
 final GWLP_WNDPROC = -4;
 
 
-
 // Window styles
 const WS_BORDER = 0x00800000;
 const WS_CAPTION = 0x00C00000;
@@ -214,9 +213,40 @@ typedef _GetWindowLongA_C = Int64 Function(Pointer hWnd, Uint32 nIndex);
 typedef _GetWindowLongA_Dart = int Function(Pointer hWnd, int nIndex);
 var GetWindowLongA = _user32.lookupFunction<_GetWindowLongA_C, _GetWindowLongA_Dart>("GetWindowLongA");
 
+typedef _GetWindowLongPtrA_C = Pointer Function(Pointer hWnd, Uint32 nIndex);
+typedef _GetWindowLongPtrA_Dart = Pointer Function(Pointer hWnd, int nIndex);
+var GetWindowLongPtrA = _user32.lookupFunction<_GetWindowLongPtrA_C, _GetWindowLongPtrA_Dart>("GetWindowLongPtrA");
+
 typedef _SetWindowLongPtrA_C = Pointer Function(Pointer hWnd, Uint32 nIndex, Pointer dwNewLong);
 typedef _SetWindowLongPtrA_Dart = Pointer Function(Pointer hWnd, int nIndex, Pointer dwNewLong);
 var SetWindowLongPtrA = _user32.lookupFunction<_SetWindowLongPtrA_C, _SetWindowLongPtrA_Dart>("SetWindowLongPtrA");
+
+final HWND_BOTTOM = Pointer.fromAddress(1);
+final HWND_NOTOPMOST = Pointer.fromAddress(-2);
+final HWND_TOP = Pointer.fromAddress(0);
+final HWND_TOPMOST = Pointer.fromAddress(-1);
+
+const SWP_ASYNCWINDOWPOS = 0x4000;
+const SWP_DEFERERASE = 0x2000;
+const SWP_DRAWFRAME = 0x0020;
+const SWP_FRAMECHANGED = 0x0020;
+const SWP_HIDEWINDOW = 0x0080;
+const SWP_NOACTIVATE = 0x0010;
+const SWP_NOCOPYBITS = 0x0100;
+const SWP_NOMOVE = 0x0002;
+const SWP_NOOWNERZORDER = 0x0200;
+const SWP_NOREDRAW = 0x0008;
+const SWP_NOREPOSITION = 0x0200;
+const SWP_NOSENDCHANGING = 0x0400;
+const SWP_NOSIZE = 0x0001;
+const SWP_NOZORDER = 0x0004;
+const SWP_SHOWWINDOW = 0x0040;
+
+// refresh only: SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
+
+typedef _SetWindowPos_C = Uint32 Function(Pointer hWnd, Pointer hWndInsertAfter, Uint32 X, Uint32 Y, Uint32 cx, Uint32 cy, Uint32 uFlags);
+typedef _SetWindowPos_Dart = int Function(Pointer hWnd, Pointer hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+var SetWindowPos = _user32.lookupFunction<_SetWindowPos_C, _SetWindowPos_Dart>("SetWindowPos");
 
 typedef _CloseWindow_C = Uint32 Function(Pointer hWnd);
 typedef _CloseWindow_Dart = int Function(Pointer hWnd);
