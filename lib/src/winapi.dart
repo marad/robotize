@@ -138,15 +138,85 @@ typedef _GetWindowThreadProcessId_C = Uint32 Function(Pointer hWnd, Pointer<Uint
 typedef _GetWindowThreadProcessId_Dart = int Function(Pointer hWnd, Pointer<Uint32> lpdwProcessId);
 var GetWindowThreadProcessId = _user32.lookupFunction<_GetWindowThreadProcessId_C, _GetWindowThreadProcessId_Dart>("GetWindowThreadProcessId");
 
-const GWL_STYLE = -16;
+typedef _CreateWindowExW_C = Pointer Function(Uint32 dwExStyle, Pointer lpClassName, Pointer lpWindowName, Uint32 dwStyle, Uint32 X, Uint32 Y, Uint32 nWidth, Uint32 nHeight, Pointer hWndParent, Pointer hMenu, Pointer hInstance, Pointer lpParam);
+typedef _CreateWindowExW_Dart = Pointer Function(int dwExStyle, Pointer lpClassName, Pointer lpWindowName, int dwStyle, int X, int Y, int nWidth, int nHeight, Pointer hWndParent, Pointer hMenu, Pointer hInstance, Pointer lpParam);
+var CreateWindowExW = _user32.lookupFunction<_CreateWindowExW_C, _CreateWindowExW_Dart>("CreateWindowExW");
+
+
+// Window set targets
+final GWL_EXSTYLE = -20;
+final GWLP_HINSTANCE = -6;
+final GWLP_ID = -12;
+final GWL_STYLE = -16;
+final GWLP_USERDATA = -21;
+final GWLP_WNDPROC = -4;
+
+
+
+// Window styles
+const WS_BORDER = 0x00800000;
+const WS_CAPTION = 0x00C00000;
+const WS_CHILD = 0x40000000;
+const WS_CHILDWINDOW = 0x40000000;
+const WS_CLIPCHILDREN = 0x02000000;
+const WS_CLIPSIBLINGS = 0x04000000;
+const WS_DISABLED = 0x08000000;
+const WS_DLGFRAME = 0x00400000;
+const WS_GROUP = 0x00020000;
+const WS_HSCROLL = 0x00100000;
+const WS_ICONIC = 0x20000000;
+const WS_MAXIMIZE = 0x01000000;
+const WS_MAXIMIZEBOX = 0x00010000;
+const WS_MINIMIZE = 0x20000000;
+const WS_MINIMIZEBOX = 0x00020000;
+const WS_OVERLAPPED = 0x00000000;
+const WS_OVERLAPPEDWINDOW = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+const WS_POPUP = 0x80000000;
+const WS_POPUPWINDOW = (WS_POPUP | WS_BORDER | WS_SYSMENU);
+const WS_SIZEBOX = 0x00040000;
+const WS_SYSMENU = 0x00080000;
+const WS_TABSTOP = 0x00010000;
+const WS_THICKFRAME = 0x00040000;
+const WS_TILED = 0x00000000;
+const WS_TILEDWINDOW = (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 const WS_VISIBLE = 0x10000000;
+
+// Window extended styles
+const WS_EX_ACCEPTFILES = 0x00000010;
+const WS_EX_APPWINDOW = 0x00040000;
+const WS_EX_CLIENTEDGE = 0x00000200;
+const WS_EX_COMPOSITED = 0x02000000;
+const WS_EX_CONTEXTHELP = 0x00000400;
+const WS_EX_CONTROLPARENT = 0x00010000;
+const WS_EX_DLGMODALFRAME = 0x00000001;
+const WS_EX_LAYERED = 0x00080000;
+const WS_EX_LAYOUTRTL = 0x00400000;
+const WS_EX_LEFT = 0x00000000;
+const WS_EX_LEFTSCROLLBAR = 0x00004000;
+const WS_EX_LTRREADING = 0x00000000;
+const WS_EX_MDICHILD = 0x00000040;
+const WS_EX_NOACTIVATE = 0x08000000;
+const WS_EX_NOINHERITLAYOUT = 0x00100000;
+const WS_EX_NOPARENTNOTIFY = 0x00000004;
+const WS_EX_NOREDIRECTIONBITMAP = 0x00200000;
+const WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE);
+const WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST);
+const WS_EX_RIGHT = 0x00001000;
+const WS_EX_RIGHTSCROLLBAR = 0x00000000;
+const WS_EX_RTLREADING = 0x00002000;
+const WS_EX_STATICEDGE = 0x00020000;
+const WS_EX_TOOLWINDOW = 0x00000080;
+const WS_EX_TOPMOST = 0x00000008;
+const WS_EX_TRANSPARENT = 0x00000020;
+const WS_EX_WINDOWEDGE = 0x00000100;
+
 typedef _GetWindowLongA_C = Int64 Function(Pointer hWnd, Uint32 nIndex);
 typedef _GetWindowLongA_Dart = int Function(Pointer hWnd, int nIndex);
 var GetWindowLongA = _user32.lookupFunction<_GetWindowLongA_C, _GetWindowLongA_Dart>("GetWindowLongA");
 
-typedef _CreateWindowExW_C = Pointer Function(Uint32 dwExStyle, Pointer lpClassName, Pointer lpWindowName, Uint32 dwStyle, Uint32 X, Uint32 Y, Uint32 nWidth, Uint32 nHeight, Pointer hWndParent, Pointer hMenu, Pointer hInstance, Pointer lpParam);
-typedef _CreateWindowExW_Dart = Pointer Function(int dwExStyle, Pointer lpClassName, Pointer lpWindowName, int dwStyle, int X, int Y, int nWidth, int nHeight, Pointer hWndParent, Pointer hMenu, Pointer hInstance, Pointer lpParam);
-var CreateWindowExW = _user32.lookupFunction<_CreateWindowExW_C, _CreateWindowExW_Dart>("CreateWindowExW");
+typedef _SetWindowLongPtrA_C = Pointer Function(Pointer hWnd, Uint32 nIndex, Pointer dwNewLong);
+typedef _SetWindowLongPtrA_Dart = Pointer Function(Pointer hWnd, int nIndex, Pointer dwNewLong);
+var SetWindowLongPtrA = _user32.lookupFunction<_SetWindowLongPtrA_C, _SetWindowLongPtrA_Dart>("SetWindowLongPtrA");
 
 typedef _CloseWindow_C = Uint32 Function(Pointer hWnd);
 typedef _CloseWindow_Dart = int Function(Pointer hWnd);
