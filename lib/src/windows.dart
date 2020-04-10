@@ -7,9 +7,9 @@ import 'winapi.dart' as winapi;
 // [x] Pobranie aktywnego okna (GetActiveWindow)
 // [x] Aktywowanie Okna (SetActiveWindow / SetForegroundWindow)
 // [x] Wysłanie wciśnięć klawiszy (SendInput)
-// [ ] Wysłanie kliknięcia
-// [ ] - kliknięcie relatywnie do ekranu
-// [ ] - kliknięcie relatywnie do okna (ScreenToClient / ClientToScreen)
+// [x] Wysłanie kliknięcia
+// [x] - kliknięcie relatywnie do ekranu
+// [x] - kliknięcie relatywnie do okna (ScreenToClient / ClientToScreen)
 // [x] Czytanie clipboardu / Zapisywanie do clipboardu
 // [x] Szukanie Okna (FinwWindowExA)
 // [x] - Szukanie po ID
