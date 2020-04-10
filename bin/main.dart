@@ -47,6 +47,10 @@ main() {
   // sendInput("Hello World!");
   // quitWindow(notepad.id);
 
+  hotkey.add("{F3}", () {
+    var window = Windows.find(WindowQuery(titleMatcher: "Notepad"));
+    window.setPosition(0, 0);
+  });
 
   hotkey.add("{F4}", () {
     // var currentState = allocate<Int8>(count: 256);
@@ -92,12 +96,15 @@ main() {
     // clipboard.text = "This is sparta! 😀";
     // var desktop = Window(WindowId.fromPointer(winapi.GetDesktopWindow()));
     // input.click(500, 500, button: MouseButton.Left, clickMode: ClickMode.RelativeToWindowClientArea);
-    var window = Windows.find(WindowQuery(titleMatcher: "Untitled"));
-    print(window.getWindowText());
+    // var window = Windows.find(WindowQuery(titleMatcher: "Notepad"));
+    // window.updateStyle(winapi.WS_TILEDWINDOW, updateType: FlagUpdateType.Toggle);
+    // window.setPosition(0, 0);
+    // window.updateExStyle(winapi.WS_EX_LEFTSCROLLBAR, updateType: FlagUpdateType.Toggle);
+    // print(window.getWindowText());
     // var window = Windows.getActiveWindow();
-    print(window.isAlwaysOnTop());
-    window.setAlwaysOnTop(!window.isAlwaysOnTop());
-    print('Window set to always on top');
+    // print(window.isAlwaysOnTop());
+    // window.setAlwaysOnTop(!window.isAlwaysOnTop());
+    // print('Window set to always on top');
     // input.send("^v");
     // input.send("Hello Wor{SHIFT down}ld{SHIFT up}{ENTER}");
     // input.send("{{}{}}"); // czemu to nie dziala?

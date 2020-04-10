@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:nativewrappers';
 import 'package:ffi/ffi.dart';
 import 'package:robotize/src/models.dart';
 import 'winapi.dart' as winapi;
@@ -238,6 +239,66 @@ class Window {
       winapi.SWP_NOMOVE | winapi.SWP_NOSIZE | winapi.SWP_FRAMECHANGED);
   }
 
+  void bringToTop() {
+    winapi.SetWindowPos(
+      hwnd,
+      winapi.HWND_TOP,
+      0, 0, 0, 0,
+      winapi.SWP_NOMOVE | winapi.SWP_NOSIZE | winapi.SWP_ASYNCWINDOWPOS
+    );
+  }
+
+  void sendToBottom() {
+    winapi.SetWindowPos(
+      hwnd,
+      winapi.HWND_BOTTOM,
+      0, 0, 0, 0,
+      winapi.SWP_NOMOVE | winapi.SWP_NOSIZE | winapi.SWP_ASYNCWINDOWPOS
+    );
+  }
+
+  void setPosition(int x, int y) {
+    winapi.SetWindowPos(
+      hwnd,
+      nullptr,
+      x, y, 0, 0,
+      winapi.SWP_NOSIZE | winapi.SWP_NOZORDER | winapi.SWP_ASYNCWINDOWPOS
+    );
+  }
+
+  void setSize(int width, int height) {
+    winapi.SetWindowPos(
+      hwnd,
+      nullptr,
+      0, 0, width, height,
+      winapi.SWP_NOMOVE | winapi.SWP_NOZORDER | winapi.SWP_ASYNCWINDOWPOS
+    );
+  }
+
+  void updateStyle(final int update, {FlagUpdateType updateType = FlagUpdateType.SetFlag}) {
+    final current = winapi.GetWindowLongPtrA(hwnd, winapi.GWL_STYLE).address;
+    winapi.SetWindowLongPtrA(
+      hwnd, winapi.GWL_STYLE,
+      Pointer.fromAddress(_flagUpdate(current, update, updateType)));
+  }
+
+  void updateExStyle(final int update, {FlagUpdateType updateType = FlagUpdateType.SetFlag}) {
+    final current = winapi.GetWindowLongPtrA(hwnd, winapi.GWL_EXSTYLE).address;
+    winapi.SetWindowLongPtrA(
+      hwnd, winapi.GWL_EXSTYLE,
+      Pointer.fromAddress(_flagUpdate(current, update, updateType)));
+  }
+
+  int _flagUpdate(int current, int update, FlagUpdateType updateType) {
+    switch (updateType) {
+      case FlagUpdateType.Reset: return update;
+      case FlagUpdateType.SetFlag: return current | update;
+      case FlagUpdateType.Toggle: return current ^ update;
+      case FlagUpdateType.UnsetFlag: return current & (-1 ^ update);
+    }
+    return current;
+  }
+
   int postMessage(int msg, int wparam, int lparam) {
     var wparam_c =  allocate<Uint64>();
     var lparam_c = allocate<Int64>();
@@ -268,6 +329,10 @@ class WindowInfo {
   String toString() {
     return "ID: ${id.windowId}, class: $className, title: $title";
   }
+}
+
+enum FlagUpdateType {
+  Reset, SetFlag, Toggle, UnsetFlag
 }
 
 class _WindowCollector extends Struct {
