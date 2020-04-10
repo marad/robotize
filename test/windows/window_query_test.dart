@@ -3,7 +3,7 @@ import 'package:robotize/src/windows.dart';
 
 void main() {
 
-  var windowInfo = WindowInfo(WindowId.fromAddress(123), "Some title", "my_class");
+  var windowInfo = WindowInfo(WindowId.fromAddress(123), "Some title", "my_class", "C:\\Some\\program.exe");
 
   test("should match window by id", () {
     expect(WindowQuery(windowId: WindowId.fromAddress(123)).windowMatches(windowInfo), true);
@@ -39,5 +39,16 @@ void main() {
     expect(WindowQuery(classMatcher: RegExp(r"class$")).windowMatches(windowInfo), true);
     expect(WindowQuery(classMatcher: RegExp(r"^my_class$")).windowMatches(windowInfo), true);
     expect(WindowQuery(classMatcher: RegExp(r"^class")).windowMatches(windowInfo), false);
+  });
+
+  test("matching exe name by string", () {
+    expect(WindowQuery(exeNameMatcher: "program.exe").windowMatches(windowInfo), true);
+    expect(WindowQuery(exeNameMatcher: "C:\\Some").windowMatches(windowInfo), true);
+    expect(WindowQuery(exeNameMatcher: "other").windowMatches(windowInfo), false);
+  });
+
+  test("matching exe name by regex", () {
+    expect(WindowQuery(exeNameMatcher: RegExp(r"program.exe$")).windowMatches(windowInfo), true);
+    expect(WindowQuery(exeNameMatcher: RegExp(r"^program.exe")).windowMatches(windowInfo), false);
   });
 }

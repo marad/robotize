@@ -45,14 +45,14 @@ class WindowQuery {
   final WindowId windowId;
   final Pattern titleMatcher;
   final Pattern classMatcher;
-  // final Pattern exeNameMatcher;
+  final Pattern exeNameMatcher;
   final bool onlyVisible;
 
   WindowQuery(
       {this.windowId,
       this.titleMatcher,
       this.classMatcher,
-      // this.exeNameMatcher,
+      this.exeNameMatcher,
       this.onlyVisible = true});
 
   bool windowMatches(WindowInfo candidate) {
@@ -61,11 +61,13 @@ class WindowQuery {
         : true;
     return windowIdMatches &&
         _titleMatches(candidate.title) &&
-        _classMatcher(candidate.className);
+        _classMatcher(candidate.className) &&
+        _exeNameMatches(candidate.exeName);
   }
 
   bool _titleMatches(String title) => _filterMatch(titleMatcher, title);
   bool _classMatcher(String title) => _filterMatch(classMatcher, title);
+  bool _exeNameMatches(String exeName) => _filterMatch(exeNameMatcher, exeName);
 
   bool _filterMatch(Pattern pattern, String toMatch) {
     if (pattern == null) {
@@ -136,11 +138,31 @@ class Window {
 
   WindowInfo getWindowInfo() {
     var buffer = allocate<Uint16>(count: 257);
-    var readChars = winapi.GetClassNameW(_id.asPointer(), buffer, 257);
+    var readChars = winapi.GetClassNameW(hwnd, buffer, 257);
     String className = _bufToString(buffer, readChars);
     free(buffer);
-    return WindowInfo(_id, getWindowText(), className);
+    return WindowInfo(_id, getWindowText(), className, getExeName());
   }
+
+  String getExeName() {
+    var data = allocate<Uint32>();
+    winapi.GetWindowThreadProcessId(hwnd, data);
+    var procId = data.value;
+    var hProc = winapi.OpenProcess(winapi.PROCESS_QUERY_LIMITED_INFORMATION, 0, procId);
+    var buffer = allocate<Utf8>(count: 500);
+    var length = allocate<Uint32>();
+    winapi.QueryFullProcessImageNameA(hProc, 0, buffer, length);
+    var exeName = Utf8.fromUtf8(buffer);
+    winapi.CloseHandle(hProc);
+    free(buffer);
+    return exeName;
+  }
+
+  static String _bufToString(Pointer<Uint16> buffer, int length) {
+    List<int> classChars = buffer.asTypedList(length);
+    return String.fromCharCodes(classChars);
+  }
+
 
   /// Returns text from provided window or control.
   String getWindowText() {
@@ -178,12 +200,6 @@ class Window {
       right: winapiRect.ref.right,
       bottom: winapiRect.ref.bottom,
     );
-  }
-
-
-  static String _bufToString(Pointer<Uint16> buffer, int length) {
-    List<int> classChars = buffer.asTypedList(length);
-    return String.fromCharCodes(classChars);
   }
 
   bool activateWindow() {
@@ -322,12 +338,13 @@ class WindowInfo {
   final WindowId id;
   final String title;
   final String className;
+  final String exeName;
 
-  WindowInfo(this.id, this.title, this.className);
+  WindowInfo(this.id, this.title, this.className, this.exeName);
 
   @override
   String toString() {
-    return "ID: ${id.windowId}, class: $className, title: $title";
+    return "ID: ${id.windowId}, class: $className, title: $title, exeName: $exeName";
   }
 }
 

@@ -49,7 +49,7 @@ main() {
 
   hotkey.add("{F3}", () {
     var window = Windows.find(WindowQuery(titleMatcher: "Notepad"));
-    window.setPosition(0, 0);
+    print(window.getExeName());
   });
 
   hotkey.add("{F4}", () {

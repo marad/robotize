@@ -416,7 +416,6 @@ typedef _DispatchMessage_C = Pointer Function(Pointer lpMsg);
 typedef _DispatchMessage_Dart = Pointer Function(Pointer lpMsg);
 var DispatchMessage = _user32.lookupFunction<_DispatchMessage_C, _DispatchMessage_Dart>("DispatchMessageW");
 
-
 const MOD_ALT = 0x0001;
 const MOD_CONTROL = 0x0002;
 const MOD_NOREPEAT = 0x4000;
@@ -514,9 +513,22 @@ typedef _GetModuleFileNameA_C = Uint32 Function(Pointer hProcess, Pointer lpFile
 typedef _GetModuleFileNameA_Dart = int Function(Pointer hProcess, Pointer lpFilename, int nSize);
 var GetModuleFileNameA = _kernel32.lookupFunction<_GetModuleFileNameA_C, _GetModuleFileNameA_Dart>("GetModuleFileNameA");
 
+typedef _GetModuleFileNameExA_C = Uint32 Function(Pointer hProcess, Pointer hModule, Pointer lpFilename, Uint32 nSize);
+typedef _GetModuleFileNameExA_Dart = int Function(Pointer hProcess, Pointer hModule, Pointer lpFilename, int nSize);
+var GetModuleFileNameExA = _kernel32.lookupFunction<_GetModuleFileNameExA_C, _GetModuleFileNameExA_Dart>("GetModuleFileNameExA");
+
+const PROCESS_QUERY_INFORMATION = 0x0400;
+const PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+const PROCESS_VM_READ = 0x0010;
+const PROCESS_VM_WRITE = 0x0020;
+
 typedef _OpenProcess_C = Pointer Function(Uint32 dwDesiredAccess, Uint32 bInheritHandle, Uint32 dwProcessId);
 typedef _OpenProcess_Dart = Pointer Function(int dwDesiredAccess, int bInheritHandle, int dwProcessId);
 var OpenProcess = _kernel32.lookupFunction<_OpenProcess_C, _OpenProcess_Dart>("OpenProcess");
+
+typedef _QueryFullProcessImageNameA_C = Uint32 Function(Pointer hProcess, Uint32 dwFlags, Pointer lpExeName, Pointer lpdwSize);
+typedef _QueryFullProcessImageNameA_Dart = int Function(Pointer hProcess, int dwFlags, Pointer lpExeName, Pointer lpdwSize);
+var QueryFullProcessImageNameA = _kernel32.lookupFunction<_QueryFullProcessImageNameA_C, _QueryFullProcessImageNameA_Dart>("QueryFullProcessImageNameA");
 
 typedef _CloseHandle_C = Uint32 Function(Pointer hObject);
 typedef _CloseHandle_Dart = int Function(Pointer hObject);
