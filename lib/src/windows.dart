@@ -145,15 +145,17 @@ class Window {
   }
 
   String getExeName() {
-    var data = allocate<Uint32>();
-    winapi.GetWindowThreadProcessId(hwnd, data);
-    var procId = data.value;
-    var hProc = winapi.OpenProcess(winapi.PROCESS_QUERY_LIMITED_INFORMATION, 0, procId);
-    var buffer = allocate<Utf8>(count: 500);
+    var processIdPointer = allocate<Uint32>();
+    winapi.GetWindowThreadProcessId(hwnd, processIdPointer);
+    var processId = processIdPointer.value;
+    var processHandle = winapi.OpenProcess(winapi.PROCESS_QUERY_LIMITED_INFORMATION, 0, processId);
+    var bufferLen = 1000;
+    var buffer = allocate<Uint16>(count: bufferLen);
     var length = allocate<Uint32>();
-    winapi.QueryFullProcessImageNameA(hProc, 0, buffer, length);
-    var exeName = Utf8.fromUtf8(buffer);
-    winapi.CloseHandle(hProc);
+    length.value = bufferLen;
+    winapi.QueryFullProcessImageNameW(processHandle, 0, buffer, length);
+    var exeName = _bufToString(buffer, length.value);
+    winapi.CloseHandle(processHandle);
     free(buffer);
     return exeName;
   }
@@ -162,7 +164,6 @@ class Window {
     List<int> classChars = buffer.asTypedList(length);
     return String.fromCharCodes(classChars);
   }
-
 
   /// Returns text from provided window or control.
   String getWindowText() {

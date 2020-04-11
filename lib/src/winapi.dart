@@ -530,6 +530,10 @@ typedef _QueryFullProcessImageNameA_C = Uint32 Function(Pointer hProcess, Uint32
 typedef _QueryFullProcessImageNameA_Dart = int Function(Pointer hProcess, int dwFlags, Pointer lpExeName, Pointer lpdwSize);
 var QueryFullProcessImageNameA = _kernel32.lookupFunction<_QueryFullProcessImageNameA_C, _QueryFullProcessImageNameA_Dart>("QueryFullProcessImageNameA");
 
+typedef _QueryFullProcessImageNameW_C = Uint32 Function(Pointer hProcess, Uint32 dwFlags, Pointer lpExeName, Pointer lpdwSize);
+typedef _QueryFullProcessImageNameW_Dart = int Function(Pointer hProcess, int dwFlags, Pointer lpExeName, Pointer lpdwSize);
+var QueryFullProcessImageNameW = _kernel32.lookupFunction<_QueryFullProcessImageNameW_C, _QueryFullProcessImageNameW_Dart>("QueryFullProcessImageNameW");
+
 typedef _CloseHandle_C = Uint32 Function(Pointer hObject);
 typedef _CloseHandle_Dart = int Function(Pointer hObject);
 var CloseHandle = _kernel32.lookupFunction<_CloseHandle_C, _CloseHandle_Dart>("CloseHandle");
