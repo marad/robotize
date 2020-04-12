@@ -2,7 +2,7 @@ import 'package:event_bus/event_bus.dart';
 
 import 'package:robotize/robotize.dart';
 import 'package:robotize/src/keyboard.dart';
-import 'package:robotize/src/winapi_isolate.dart';
+import 'package:robotize/src/winapi_main.dart';
 
 import 'winapi.dart' as winapi;
 

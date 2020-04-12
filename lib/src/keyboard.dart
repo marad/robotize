@@ -1,8 +1,5 @@
-import 'dart:ffi';
 import 'package:event_bus/event_bus.dart';
 import 'package:robotize/src/keystring.dart';
-
-import 'winapi.dart' as winapi;
 
 class KeyEvent {
   String char;

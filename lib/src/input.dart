@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:robotize/src/windows.dart';
+import 'package:robotize/src/window.dart';
 
 import 'models.dart';
 import 'winapi.dart' as winapi;

@@ -1,7 +1,7 @@
 import 'package:robotize/robotize.dart';
 
-main() async {
-  await robotizeInit();
+main() {
+  robotizeInit();
 
   hotkey.add("{F3}", () {
     var window = Windows.getActiveWindow();

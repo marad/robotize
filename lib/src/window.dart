@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'dart:nativewrappers';
 import 'package:ffi/ffi.dart';
 import 'package:robotize/src/models.dart';
 import 'winapi.dart' as winapi;

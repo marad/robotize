@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:robotize/src/windows.dart';
+import 'package:robotize/src/window.dart';
 
 void main() {
 
