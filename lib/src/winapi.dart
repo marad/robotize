@@ -408,6 +408,18 @@ typedef _GetMessage_C = Uint32 Function(Pointer lpMsg, Pointer hWnd, Uint32 wMsg
 typedef _GetMessage_Dart = int Function(Pointer lpMsg, Pointer hWnd, int wMsgFilterMin, int wMsgFilterMax);
 var GetMessage = _user32.lookupFunction<_GetMessage_C, _GetMessage_Dart>("GetMessageW");
 
+const PM_NOREMOVE = 0x0000;
+const PM_REMOVE = 0x0001;
+const PM_NOYIELD = 0x0002;
+
+typedef _PeekMessageA_C = Uint32 Function(Pointer lpMsg, Pointer hWnd, Uint32 wMsgFilterMin, Uint32 wMsgFilterMax, Uint32 wRemoveMsg);
+typedef _PeekMessageA_Dart = int Function(Pointer lpMsg, Pointer hWnd, int wMsgFilterMin, int wMsgFilterMax, int wRemoveMsg);
+var PeekMessageA = _user32.lookupFunction<_PeekMessageA_C, _PeekMessageA_Dart>("PeekMessageA");
+
+typedef _PeekMessageW_C = Uint32 Function(Pointer lpMsg, Pointer hWnd, Uint32 wMsgFilterMin, Uint32 wMsgFilterMax, Uint32 wRemoveMsg);
+typedef _PeekMessageW_Dart = int Function(Pointer lpMsg, Pointer hWnd, int wMsgFilterMin, int wMsgFilterMax, int wRemoveMsg);
+var PeekMessageW = _user32.lookupFunction<_PeekMessageW_C, _PeekMessageW_Dart>("PeekMessageW");
+
 typedef _TranslateMessage_C = Uint32 Function(Pointer lpMsg);
 typedef _TranslateMessage_Dart = int Function(Pointer lpMsg);
 var TranslateMessage = _user32.lookupFunction<_TranslateMessage_C, _TranslateMessage_Dart>("TranslateMessageW");

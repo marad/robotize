@@ -230,24 +230,24 @@ class Keyboard {
 
   static void init(EventBus eventBus) {
     _eventBus = eventBus;
-    var callback = Pointer.fromFunction<winapi.KeyboardProc>(Keyboard._keybdHookProc, 0);
-    var hook = winapi.SetWindowsHookExW(winapi.WH_KEYBOARD_LL, callback, nullptr, 0);
-    if (hook == nullptr) {
-      // TODO: handle error
-      print('couldnt register the hook');
-    } else {
-      print('Hook registered');
-    }
+    // var callback = Pointer.fromFunction<winapi.KeyboardProc>(Keyboard._keybdHookProc, 0);
+    // var hook = winapi.SetWindowsHookExW(winapi.WH_KEYBOARD_LL, callback, nullptr, 0);
+    // if (hook == nullptr) {
+    //   // TODO: handle error
+    //   print('couldnt register the hook');
+    // } else {
+    //   print('Hook registered');
+    // }
   }
 
-  static int _keybdHookProc(int code, Pointer<Uint64> wParam, Pointer<Int64> lParam) {
-    var event = wParam.address;
-    Pointer<winapi.KBDLLHOOK> dataPtr = lParam.cast();
-    var data = dataPtr.ref;
+  // static int _keybdHookProc(int code, Pointer<Uint64> wParam, Pointer<Int64> lParam) {
+  //   var event = wParam.address;
+  //   Pointer<winapi.KBDLLHOOK> dataPtr = lParam.cast();
+  //   var data = dataPtr.ref;
 
-    _eventBus.fire(KeyEvent(null, data.vkCode));
+  //   _eventBus.fire(KeyEvent(null, data.vkCode));
 
-    return winapi.CallNextHookEx(nullptr, code, wParam, lParam);
-  }
+  //   return winapi.CallNextHookEx(nullptr, code, wParam, lParam);
+  // }
 
 }

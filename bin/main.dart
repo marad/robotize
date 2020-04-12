@@ -1,7 +1,8 @@
 import 'package:robotize/robotize.dart';
 
-main() {
-  robotizeInit();
+main() async {
+  await robotizeInit();
+
   hotkey.add("{F3}", () {
     var window = Windows.getActiveWindow();
     print(window.getExeName());
@@ -12,5 +13,5 @@ main() {
     print(window.getExeName());
   });
 
-  robotizeMainLoop();
+  print('Started...');
 }

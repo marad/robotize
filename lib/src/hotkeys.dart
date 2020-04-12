@@ -1,20 +1,16 @@
-import 'dart:ffi';
 import 'package:event_bus/event_bus.dart';
-import 'package:robotize/src/keyboard.dart';
+
 import 'package:robotize/robotize.dart';
+import 'package:robotize/src/keyboard.dart';
+import 'package:robotize/src/winapi_isolate.dart';
 
 import 'winapi.dart' as winapi;
 
-class HotkeyPressed {
-  final int hotkeyId;
-  HotkeyPressed(this.hotkeyId);
-}
-
 class HotkeyDetails {
+  HotkeyDetails(this.hotkeyString, this.keyEvent, this.callback);
   final String hotkeyString;
   final KeyEvent keyEvent;
   final Function callback;
-  HotkeyDetails(this.hotkeyString, this.keyEvent, this.callback);
 }
 
 class Hotkey {
@@ -60,18 +56,13 @@ class Hotkey {
     if (key.win) {
       modifiers |= winapi.MOD_WIN;
     }
-    var result = winapi.RegisterHotKey(nullptr, hotkeyId, modifiers, key.keyCode);
-    if (result == 0) {
-      print("Error registering hotkey!");
-      var error = winapi.GetLastError();
-      print('Error: $error');
-    }
+    _eventBus.fire(RegisterHotkey(key.keyCode, hotkeyId, modifiers));
   }
 
   void remove(String hotkey) {
     var hotkeyId = _hotkeyIds[hotkey];
     _hotkeys.remove(hotkeyId);
     _hotkeyIds.remove(hotkey);
-    winapi.UnregisterHotKey(nullptr, hotkeyId);
+    _eventBus.fire(UnregisterHotkey(hotkeyId));
   }
 }
