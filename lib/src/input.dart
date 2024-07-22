@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:robotize/src/window.dart';
+import 'package:robotize/robotize.dart';
 
 import 'models.dart';
 import 'winapi.dart' as winapi;
@@ -11,19 +11,19 @@ class Input {
   var keyPressDuration = Duration(milliseconds: 20);
 
   void click(int x, int y, {MouseButton button = MouseButton.Left, ClickMode clickMode = ClickMode.Absolute}) {
-    final desktopWindowRect = Windows.getDesktopWindow().getWindowRect();
+    final desktopWindowRect = windows.getDesktopWindow().getWindowRect();
 
     var pixelX = null;
     var pixelY = null;
 
     switch (clickMode) {
       case ClickMode.RelativeToWindow:
-        final activeWindowRect = Windows.getActiveWindow().getWindowRect();
+        final activeWindowRect = windows.getActiveWindow().getWindowRect();
         pixelX = activeWindowRect.left + x;
         pixelY = activeWindowRect.top + y;
         break;
       case ClickMode.RelativeToWindowClientArea:
-        var clientOrigin = Windows.getActiveWindow().clientToScreen(Point(x: 0, y: 0));
+        var clientOrigin = windows.getActiveWindow().clientToScreen(Point(x: 0, y: 0));
         pixelX = clientOrigin.x + x;
         pixelY = clientOrigin.y + y;
         break;

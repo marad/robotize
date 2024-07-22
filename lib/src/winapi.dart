@@ -376,7 +376,22 @@ const WM_KEYDOWN = 0x0100;
 const WM_KEYUP = 0x0101;
 const WM_HOTKEY = 0x0312;
 const WH_KEYBOARD_LL = 13;
+const WH_SHELL = 10;
+
+const HSHELL_ACCESSIBILITYSTATE = 11;
+const HSHELL_ACTIVATESHELLWINDOW = 3;
+const HSHELL_APPCOMMAND = 12;
+const HSHELL_GETMINRECT = 5;
+const HSHELL_LANGUAGE = 8;
+const HSHELL_REDRAW = 6;
+const HSHELL_TASKMAN = 7;
+const HSHELL_WINDOWACTIVATED = 4;
+const HSHELL_WINDOWCREATED = 1;
+const HSHELL_WINDOWDESTROYED = 2;
+const HSHELL_WINDOWREPLACED = 1;
+
 typedef KeyboardProc = Uint32 Function(Uint32 code, Pointer<Uint64> wParam, Pointer<Int64> lParam);
+typedef ShellProc = Uint32 Function(Uint32 code, Pointer<Uint64> wParam, Pointer<Int64> lParam);
 typedef _SetWindowsHookExW_C = Pointer Function(Uint32 idHook, Pointer lpfn, Pointer hmod, Uint32 dwThreadId);
 typedef _SetWindowsHookExW_Dart = Pointer Function(int idHook, Pointer lpfn, Pointer hmod, int dwThreadId);
 var SetWindowsHookExW = _user32.lookupFunction<_SetWindowsHookExW_C, _SetWindowsHookExW_Dart>("SetWindowsHookExW");
@@ -504,6 +519,8 @@ var EmptyClipboard = _user32.lookupFunction<_EmptyClipboard_C, _EmptyClipboard_D
 const EVENT_SYSTEM_FOREGROUND = 0x0003;
 const WINEVENT_OUTOFCONTEXT = 0x0000;
 const WINEVENT_SKIPOWNPROCESS = 0x0002;
+const EVENT_OBJECT_CREATE = 0x8000;
+const EVENT_OBJECT_DESTROY = 0x8001;
 
 typedef WinEventHookCallback = Void Function(Pointer eventHook, Uint32 event, Pointer hwnd, Uint64 idObject, Uint64 idChild, Uint32 eventThread, Uint32 eventTime);
 typedef _SetWinEventHook_C = Pointer Function(Uint32 eventMin, Uint32 eventMax, Pointer hmodWinEventProc, Pointer pfnWinEventProc, Uint32 idProcess, Uint32 idThread, Uint32 dwFlags);

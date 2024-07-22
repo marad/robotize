@@ -1,17 +1,24 @@
 import 'package:robotize/robotize.dart';
 
-main() {
+main() async {
   robotizeInit();
 
   hotkey.add("{F3}", () {
-    var window = Windows.getActiveWindow();
+    var window = windows.getActiveWindow();
     print(window.getExeName());
   });
 
   hotkey.add("{F4}", () {
-    var window = Windows.find(WindowQuery(titleMatcher: "Notepad"));
+    var window = windows.find(WindowQuery(titleMatcher: "Notepad"));
+    window.activateWindow();
     print(window.getExeName());
   });
 
-  print('Started...');
+  await windows.waitActive(WindowQuery(titleMatcher: "Notepad"));
+
+  print('Notepad active');
+
+  await windows.waitInactive(WindowQuery(titleMatcher: "Notepad"));
+
+  print('Notepad not active');
 }

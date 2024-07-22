@@ -105,6 +105,17 @@ void initWindowMonitor(EventBus eventBus) {
     func,
     0, 0,
     winapi.WINEVENT_OUTOFCONTEXT | winapi.WINEVENT_SKIPOWNPROCESS);
+
+  winapi.SetWinEventHook(
+    winapi.EVENT_OBJECT_CREATE,
+    winapi.EVENT_OBJECT_CREATE,
+    nullptr,
+    func,
+    0, 0,
+    winapi.WINEVENT_OUTOFCONTEXT | winapi.WINEVENT_SKIPOWNPROCESS);
+
+  // var shellFunc = Pointer.fromFunction<winapi.ShellProc>(_shellCallback, 0);
+  // winapi.SetWindowsHookExW(winapi.WH_SHELL, shellFunc, nullptr, 0);
 }
 
 void _windowChangedCallback(
@@ -117,5 +128,21 @@ void _windowChangedCallback(
   int eventTime,
 ) {
   var window = Window(WindowId.fromPointer(hwnd));
-  _windowMonitorEventBus.fire(WindowChanged(window));
+  if (event == winapi.EVENT_SYSTEM_FOREGROUND) {
+    _windowMonitorEventBus.fire(WindowChanged(window));
+  } else if (event == winapi.EVENT_OBJECT_CREATE) {
+    print('Window created: ${window.getWindowInfo()}');
+  } else if (event == winapi.EVENT_OBJECT_DESTROY) {
+    print('Window destroyed ${window.getWindowText()}');
+  }
+}
+
+int _shellCallback(int code, Pointer<Uint64> wParam, Pointer<Int64> lParam) {
+  if (code == winapi.HSHELL_WINDOWCREATED) {
+    print('Window created');
+  } else if(code == winapi.HSHELL_WINDOWDESTROYED) {
+    print('Window destroyed');
+  }
+  print('callback');
+  return winapi.CallNextHookEx(nullptr, code, wParam, lParam);
 }

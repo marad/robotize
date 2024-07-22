@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:ffi';
+import 'package:event_bus/event_bus.dart';
 import 'package:ffi/ffi.dart';
 import 'package:robotize/src/models.dart';
+import 'package:robotize/src/winapi_main.dart';
 import 'winapi.dart' as winapi;
 
 // Funkcje do zaimplementowania w pierwszej kolejnosci
@@ -78,16 +81,19 @@ class WindowQuery {
 
 
 class Windows {
-  static Window getActiveWindow() =>
+  Windows(this._eventBus);
+  final EventBus _eventBus;
+
+  Window getActiveWindow() =>
       Window(WindowId.fromPointer(winapi.GetForegroundWindow()));
 
-  static Window getDesktopWindow() =>
+  Window getDesktopWindow() =>
     Window(WindowId.fromPointer(winapi.GetDesktopWindow()));
 
-  static Window getWindow(WindowId id) => Window(id);
+  Window getWindow(WindowId id) => Window(id);
 
   /// Lists windows. If query is not provided, lists only visible windows.
-  static List<Window> list({WindowQuery query}) {
+  List<Window> list({WindowQuery query}) {
     if (query != null && query.windowId != null) {
       // find and examine only one window
       var window = getWindow(query.windowId);
@@ -118,13 +124,45 @@ class Windows {
     }
   }
 
-  static Window find(WindowQuery query) {
+  Window find(WindowQuery query) {
     var windows = list(query: query);
     if (windows.length > 0) {
       return windows.first;
     } else {
       return null;
     }
+  }
+
+  Future<Window> waitActive(WindowQuery query) {
+    var completer = Completer<Window>();
+    StreamSubscription<WindowChanged> subscription = null;
+    subscription = _eventBus.on<WindowChanged>().listen((event) {
+      var window = event.newWindow;
+      if (query.windowMatches(window.getWindowInfo())) {
+        completer.complete(window);
+        subscription.cancel();
+      }
+    });
+    return completer.future;
+  }
+
+  Future<void> waitInactive(WindowQuery query) {
+    var completer = Completer();
+    StreamSubscription<WindowChanged> subscription = null;
+    subscription = _eventBus.on<WindowChanged>().listen((event) {
+      var window = event.newWindow;
+      if (!query.windowMatches(window.getWindowInfo())) {
+        completer.complete();
+        subscription.cancel();
+      }
+    });
+
+    var activeWindow = getActiveWindow();
+    if (!query.windowMatches(activeWindow.getWindowInfo())) {
+      subscription.cancel();
+      completer.complete();
+    }
+    return completer.future;
   }
 }
 
